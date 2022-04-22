@@ -1,6 +1,6 @@
 # SUPERSTORE DATA VISUALIZATION DASHBOARD
 
 ## Team Members
-- Yajat
 - Rishu
+- Yajat
 - Yash

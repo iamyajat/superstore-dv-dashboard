@@ -1,6 +1,6 @@
 ---
 title: "Superstore Dashboard"
-author: "Yajat, Rishu & Yash"
+author: "Rishu, Yajat & Yash"
 date: "22/04/2022"
 output: html_document
 runtime: shiny

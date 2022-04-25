@@ -1,7 +1,7 @@
 ---
 title: "Superstore Dashboard"
 author: "Rishu, Yajat & Yash"
-date: "22/04/2022"
+date: '2022-04-22'
 output: html_document
 runtime: shiny
 ---
@@ -9,36 +9,41 @@ runtime: shiny
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(DT)
+library(plotly)
+library(dplyr)
 df = read.csv("./superstore.csv")
+state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")[,1:2]
 ```
 
-```{r, echo=FALSE}
-datatable(df)
-```
-
-This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately.
-
-To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
-
-## Inputs and Outputs
-
-You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. The `selectInput` and `sliderInput` functions create the input widgets used to drive the plot.
+PLots Plots Plots
 
 ```{r eruptions, echo=FALSE}
 inputPanel(
-  selectInput("n_breaks", label = "Number of bins:",
-              choices = c(10, 20, 35, 50), selected = 20),
-
-  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
-              min = 0.2, max = 2, value = 1, step = 0.2)
+  selectInput("cat", label = "Category:",
+              choices = unique(df$Category), selected = "Furniture")
+  
+#  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+#              min = 0.2, max = 2, value = 1, step = 0.2)
 )
 
-renderPlot({
-  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
-       xlab = "Duration (minutes)", main = "Geyser eruption duration")
-
-  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
-  lines(dens, col = "blue")
+renderPlotly({
+  df_cat = df %>% filter(Category == input$cat)
+  df_cat = aggregate(df_cat[, 18:21], list(df_cat$State), mean)
+  df_cat = merge(x=df_cat, y=state_codes, by.x= "Group.1", by.y = "state")
+  df_cat$hover <- with(df_cat, paste(Group.1, '<br>', "Profits: ", Profit))
+  l <- list(color = toRGB("white"), width = 2)
+  g <- list(
+    scope = 'usa',
+    projection = list(type = 'albers usa')
+  )
+  fig <- plot_ly(type="choropleth", locations=df_cat$code, 
+                 locationmode="USA-states", text = df_cat$hover,
+                 z=df_cat$Profit) %>% layout(geo=g)
+  fig <- fig %>% colorbar(title = "Profits USD")
+  fig <- fig %>% layout(
+    title = 'Average Profits'
+  )
+  fig
 })
 ```
 

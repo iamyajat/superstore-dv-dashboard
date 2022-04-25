@@ -5,7 +5,7 @@ summary(df)
 library(plotly)
 library(dplyr)
 
-
+unique(df$Category)
 df_tech = df %>% filter(Category == "Technology")
 df_tech = aggregate(df_tech[, 18:21], list(df_tech$State), mean)
 
@@ -15,10 +15,7 @@ df_tech$Group.1
 dff = merge(x=df_tech, y=state_codes, by.x= "Group.1", by.y = "state")
 dff
 
-fig = plot_ly(df_tech, type='choropleth', locations=df_tech$Group.1, z=df_tech$Profit, text=df_tech$Group.1, colorscale="Blues")
-fig
-
-
+dff$hover <- with(dff, paste(Group.1, '<br>', "Profits: ", Profit))
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)
 # specify some map projection/options
@@ -27,14 +24,12 @@ g <- list(
   projection = list(type = 'albers usa')
 )
 
-fig <- plot_geo(dff, locationmode = 'USA-states')
-fig <- fig %>% add_trace(
-  z = ~Profit, text = ~Profit, locations = ~code,
-  color = ~Profit, colorscale="Viridis",
-)
-fig <- fig %>% colorbar(title = "Average Profit in $")
+fig <- plot_ly(type="choropleth", locations=dff$code, 
+               locationmode="USA-states", text = dff$hover,
+               z=dff$Profit) %>% layout(geo=g)
+fig <- fig %>% colorbar(title = "Profits USD")
 fig <- fig %>% layout(
-  title = 'Profits',
-  geo = g
+  title = 'Average Profits'
 )
+
 fig

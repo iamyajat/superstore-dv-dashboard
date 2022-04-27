@@ -111,8 +111,25 @@ fig <- fig %>% layout(title = 'Sales vs Profit',
 fig
 ```
 
-### SOME GRAPH
-```{r}
+### TOP 5 CITIES PROFIT
+```{r, echo=FALSE}
+  df_city_agg = aggregate(df[, c("Profit")], list(df$City), sum)
+  df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=5)
+
+x <- df_top5$Group.1
+y <- df_top5$x
+text <- df_top5$Group.1
+data <- data.frame(x, y, text)
+
+fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
+        marker = list(color = 'rgb(235, 190, 209)',
+                      line = list(color = 'rgb(232, 76, 134)',
+                                  width = 1.5)))
+fig <- fig %>% layout(title = "Top 5 Cities in Profit",
+         xaxis = list(title = ""),
+         yaxis = list(title = ""))
+
+fig
 ```
 
 

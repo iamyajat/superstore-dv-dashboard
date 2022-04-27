@@ -73,43 +73,32 @@ renderPlotly({
 
 ### Another one
 ```{r, echo=FALSE}
-supdata<- read.csv("./superstore.csv")
-fig <- plot_ly(supdata[1:50,], x = ~supdata$Sales, y = ~supdata$Profit, z = ~supdata$Discount,
-               marker = list(color = ~supdata$Quantity, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
+df<- read.csv("./superstore.csv")
+fig <- plot_ly(df[1:50,], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
+               marker = list(color = ~df$Quantity, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
 fig <- fig %>% add_markers()
 fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
                                    yaxis = list(title = 'Sales'),
                                    zaxis = list(title = 'Profit')),
                       annotations = list(
                         x = 1,
-                        y = 0.5,
+                        y = 1,
                         text = 'Profits',
                         xref = 'paper',
                         yref = 'paper',
                         showarrow = FALSE
-                      ),paper_bgcolor = '#000000',
+                      ),paper_bgcolor = '#FFFFFF',
                       plot_bgcolor = '#000000',
-                      font = list(color = "#ffffff"))
+                      font = list(color = "#000000"))
 fig
 ```
-## Embedded Application
 
-It's also possible to embed an entire Shiny application within an R Markdown document using the `shinyAppDir` function. This example embeds a Shiny application located in another directory:
-
-```{r tabsets, echo=FALSE}
-shinyAppDir(
-  system.file("examples/06_tabsets", package = "shiny"),
-  options = list(
-    width = "100%", height = 550
-  )
-)
+### ANOTHER ANOTHER ONE
+```{r, echo=FALSE}
+renderPlotly({
+  fig <- plot_ly(data = df, x = ~Sales, y = ~Profit)
+fig
+})
 ```
-
-Note the use of the `height` parameter to determine how much vertical space the embedded application should occupy.
-
-You can also use the `shinyApp` function to define an application inline rather then in an external directory.
-
-In all of R code chunks above the `echo = FALSE` attribute is used. This is to prevent the R code within the chunk from rendering in the document alongside the Shiny components.
-
 
 

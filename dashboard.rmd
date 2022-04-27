@@ -20,7 +20,7 @@ state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master
 ```{r eruptions, echo=FALSE}
 inputPanel(
   selectInput("cat", label = "Category:",
-              choices = unique(df$Category), selected = "Furniture"),
+              choices = unique(df$Category), selected = "Office Supplies"),
   selectInput("typ", label = "Type:",
               choices = c("Sales", "Discount", "Profit"), selected = "Profit")
   
@@ -50,6 +50,23 @@ renderPlotly({
   )
   fig
 })
+```
+
+### Another one
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ2", label = "Type:",
+              choices = c("Ship.Mode", "Segment"), selected = "Ship.Mode")
+)
+renderPlotly({
+  ship_mode_freq = data.frame(table(df[,c(input$typ2)]))
+  fig <- plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie", textinfo='label+percent')
+  # fig <- fig %>% add_pie(hole = 0.6)
+  fig <- fig %>% layout(title = paste(input$typ2, 'of People'),
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+  fig
+  })
 ```
 
 ## Embedded Application

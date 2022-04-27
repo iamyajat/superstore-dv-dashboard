@@ -74,7 +74,7 @@ renderPlotly({
 ### Another one
 ```{r, echo=FALSE}
 df<- read.csv("./superstore.csv")
-fig <- plot_ly(df[1:50,], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
+fig <- plot_ly(df[seq(1,50000,500),], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
                marker = list(color = ~df$Quantity, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
 fig <- fig %>% add_markers()
 fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
@@ -95,10 +95,24 @@ fig
 
 ### ANOTHER ANOTHER ONE
 ```{r, echo=FALSE}
-renderPlotly({
-  fig <- plot_ly(data = df, x = ~Sales, y = ~Profit)
+suppressPlotlyMessage <- function(p) {
+  suppressMessages(plotly_build(p))
+}
+
+fig <- suppressPlotlyMessage(plot_ly(data = df[seq(1,5000,50),], x = ~Sales, y = ~Profit,
+               marker = list(size = 6,
+                             color = 'rgba(255, 182, 193, .9)',
+                             line = list(color = 'rgba(152, 0, 0, .8)',
+                                         width = 1))))
+fig <- fig %>% layout(title = 'Sales vs Profit',
+         yaxis = list(zeroline = FALSE),
+         xaxis = list(zeroline = FALSE))
+
 fig
-})
+```
+
+### SOME GRAPH
+```{r}
 ```
 
 

@@ -2,7 +2,7 @@
 title: "Superstore Dashboard"
 author: "Rishu, Yajat & Yash"
 date: '2022-04-22'
-output: 
+output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
@@ -31,7 +31,7 @@ inputPanel(
               choices = unique(df$Category), selected = "Office Supplies"),
   selectInput("typ", label = "Type:",
               choices = c("Sales", "Discount", "Profit"), selected = "Profit")
-  
+
 #  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
 #              min = 0.2, max = 2, value = 1, step = 0.2)
 )
@@ -40,8 +40,8 @@ renderPlotly({
   df_cat = df %>% filter(Category == input$cat)
   df_cat = aggregate(df_cat[, 18:21], list(df_cat$State), mean)
   df_cat = merge(x=df_cat, y=state_codes, by.x= "Group.1", by.y = "state")
-  df_cat$hover <- with(df_cat, paste(Group.1, "<br>Sales: ", round(Sales, digits = 2), 
-                                     "<br>Discount: ", round(Discount, digits = 2), 
+  df_cat$hover <- with(df_cat, paste(Group.1, "<br>Sales: ", round(Sales, digits = 2),
+                                     "<br>Discount: ", round(Discount, digits = 2),
                                      "<br>Profits: ", round(Profit, digits = 2)
                                      ))
   l <- list(color = toRGB("white"), width = 2)
@@ -49,7 +49,7 @@ renderPlotly({
     scope = 'usa',
     projection = list(type = 'albers usa')
   )
-  fig <- plot_ly(type="choropleth", locations=df_cat$code, 
+  fig <- plot_ly(type="choropleth", locations=df_cat$code,
                  locationmode="USA-states", text = df_cat$hover,
                  z=df_cat[, c(input$typ)]) %>% layout(geo=g)
   fig <- fig %>% colorbar(title ="in USD")
@@ -168,12 +168,36 @@ fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$typ
          xaxis = list(title = ""),
          yaxis = list(title = ""))
 
-fig  
+fig
 })
 ```
 
 
-### Heatmap
+Shipping Time Analysis
+================================================================================
+
+
+Average Shipping Time per city
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+#state_wise_sales_average = tapply(data$Sales, data$State, mean)
+#data$shipping_time <-  as.Date(as.character(data$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(data$Order.Date), format="%m/%d/%Y")
+#average_shipping_time_by_province = tapply(data$shipping_time, data$State, mean)
+
+# LINK MAP HERE
+
+```
+
+
+```{r, echo=FALSE}
+#average_shipping_time_by_mode_of_transport = tapply(data$shipping_time, data$Ship.Mode, mean)
+# LINK MAP HERE
+```
+
+Control Panel
+--------------------------------------------------------------------------------
+
+Heatmap
 ================================================================================
 ```{r, echo=FALSE}
 inputPanel(

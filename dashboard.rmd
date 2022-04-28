@@ -68,9 +68,9 @@ renderPlotly({
 fig <- plot_ly(df[seq(1,50000,500),], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
                marker = list(color = ~df$Quantity, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
 fig <- fig %>% add_markers()
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
-                                   yaxis = list(title = 'Sales'),
-                                   zaxis = list(title = 'Profit')),
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'Sales'),
+                                   yaxis = list(title = 'Profit'),
+                                   zaxis = list(title = 'Discount')),
                       annotations = list(
                         x = 1,
                         y = 1,
@@ -78,9 +78,9 @@ fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
                         xref = 'paper',
                         yref = 'paper',
                         showarrow = FALSE
-                      ),paper_bgcolor = '#000000',
-                      plot_bgcolor = '#FFFFFF',
-                      font = list(color = "#FFFFFF"))
+                      ),paper_bgcolor = '#FFFFFF',
+                      plot_bgcolor = '#000000',
+                      font = list(color = "#000000"))
 fig
 })
 ```
@@ -114,16 +114,24 @@ fig
 
 Monthly trend
 --------------------------------------------------------------------------------
+### Control Panel {data-height=120}
+```{r, echo=FALSE}
+
+inputPanel(
+  selectInput("typ8", label = "Type:",
+              choices = c("Sales", "Profit"), selected = "Sales"),
+)
+```
 ### Monthly Trend
 ```{r, echo=FALSE}
 renderPlot({
   
 df<-df%>%mutate(month = month(as.Date(as.character(df$Order.Date), format="%m/%d/%Y"), label = T))
 df%>%
-  ggplot(aes(month,log(Profit)))+
+  ggplot(aes(month,log(df[,input$typ8])))+
   geom_boxplot(fill='LightBlue')+
   theme_bw()+
-  labs(title='Profit vs Month',
+  labs(title= paste(input$typ8, 'vs Month'),
        x='Month')
 })
 ```

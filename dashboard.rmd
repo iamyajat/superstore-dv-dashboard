@@ -20,8 +20,9 @@ state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master
 USA : Business Analysis
 ================================================================================
 
-Control Panel{data-width=100}
+Control Panel{data-width=160}
 --------------------------------------------------------------------------------
+### Control Panel
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("cat", label = "Category:",
@@ -33,6 +34,7 @@ inputPanel(
 
 Home{data-width=800}
 --------------------------------------------------------------------------------
+### USA : Business Analysis
 ```{r, echo=FALSE}
 renderPlotly({
   df_cat = df %>% filter(Category == input$cat)
@@ -58,34 +60,6 @@ renderPlotly({
 })
 ```
 
-
-
-Volume Divisions
-================================================================================
-
-Volume Divisions{data-width=800}
---------------------------------------------------------------------------------
-```{r, echo=FALSE}
-renderPlotly({
-  ship_mode_freq = data.frame(table(df[,c(input$typ2)]))
-  fig <- plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie", textinfo='label+percent')
-  # fig <- fig %>% add_pie(hole = 0.6)
-  fig <- fig %>% layout(title = paste(input$typ2, 'of People'),
-         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-  fig
-  })
-```
-
-Control Panel{data-width=100}
---------------------------------------------------------------------------------
-```{r, echo=FALSE}
-inputPanel(
-  selectInput("typ2", label = "Type:",
-              choices = c("Ship.Mode", "Segment"), selected = "Ship.Mode")
-)
-```
-
 Business Trinity
 ================================================================================
 ```{r, echo=FALSE}
@@ -109,28 +83,13 @@ fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
 fig
 ```
 
-
-Shipment Trends
-================================================================================
-```{r,echo =FALSE}
-df%>%
-  group_by(Sub.Category)%>%
-  ggplot(aes(Sub.Category,fill=Ship.Mode))+
-  geom_bar(position = 'fill')+
-  scale_fill_manual(values = c("#DADAEB", "#9E9AC8", "#6A51A3","#301934"))+
-  coord_flip()+
-  labs(title='There is no prefered ship mode in different products',
-       x='Proportion',
-       y='Sub Category')+
-  theme_bw()+
-  theme(plot.margin = unit(c(3,1,1,1), "cm"))
-```
-
 Trend of Sale and Profits
 ================================================================================
 
 Sales vs Profits
 --------------------------------------------------------------------------------
+
+### Sales vs Profits
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {
   suppressMessages(plotly_build(p))
@@ -142,7 +101,7 @@ fig <- suppressPlotlyMessage(plot_ly(data = df[seq(1,5000,50),], x = ~Sales, y =
                              color = 'rgba(255, 182, 193, .9)',
                              line = list(color = 'rgba(152, 0, 0, .8)',
                                          width = 1))))
-fig <- fig %>% layout(title = 'Sales vs Profit',
+fig <- fig %>% layout(title = "",
          yaxis = list(zeroline = FALSE),
          xaxis = list(zeroline = FALSE),
          margin = c(t=100))
@@ -153,6 +112,7 @@ fig
 
 Monthly trend
 --------------------------------------------------------------------------------
+### Monthly Trend
 ```{r, echo=FALSE}
 renderPlot({
   
@@ -171,7 +131,7 @@ Top Cities
 
 Visualization {data-width=800}
 --------------------------------------------------------------------------------
-
+### Visualization
 ```{r, echo=FALSE}
 renderPlotly({
 
@@ -198,8 +158,9 @@ fig
 ```
 
 
-Control Panel{data-width=100}
+Control Panel{data-width=160}
 --------------------------------------------------------------------------------
+### Control Panel
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ3", label = "Type:",
@@ -209,12 +170,13 @@ inputPanel(
 )
 ```
 
+
 Shipping Time Analysis
 ================================================================================
 
-
 Average Shipping Time per city
 --------------------------------------------------------------------------------
+### Average Shipping Time per city
 ```{r, echo=FALSE}
 renderPlotly({
   
@@ -251,6 +213,7 @@ fig
 
 Average Shipping Time by Shipping Mode
 --------------------------------------------------------------------------------
+### Average Shipping Time by Shipping Mode
 ```{r, echo=FALSE}
 renderPlotly({
 df$shipping_time <-  as.Date(as.character(df$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(df$Order.Date), format="%m/%d/%Y")
@@ -277,11 +240,60 @@ fig
 })
 ```
 
+Shipment Trends
+================================================================================
+### Shipment Trends
+```{r,echo =FALSE}
+renderPlot({
+  
+df%>%
+  group_by(Sub.Category)%>%
+  ggplot(aes(Sub.Category,fill=Ship.Mode))+
+  geom_bar(position = 'fill')+
+  scale_fill_manual(values = c("#DADAEB", "#9E9AC8", "#6A51A3","#301934"))+
+  coord_flip()+
+  labs(title='There is no prefered ship mode in different products',
+       x='Proportion',
+       y='Sub Category')+
+  theme_bw()+
+  theme(plot.margin = unit(c(3,1,1,1), "cm"))
+})
+```
+
+Volume Divisions
+================================================================================
+
+Volume Divisions{data-width=800}
+--------------------------------------------------------------------------------
+### Volume Divisions
+```{r, echo=FALSE}
+renderPlotly({
+  ship_mode_freq = data.frame(table(df[,c(input$typ2)]))
+  fig <- plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie", textinfo='label+percent')
+  # fig <- fig %>% add_pie(hole = 0.6)
+  fig <- fig %>% layout(title = paste(input$typ2, 'of People'),
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+  fig
+  })
+```
+
+Control Panel{data-width=160}
+--------------------------------------------------------------------------------
+### Control Panel
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ2", label = "Type:",
+              choices = c("Ship.Mode", "Segment"), selected = "Ship.Mode")
+)
+```
+
 Heatmap
 ================================================================================
 
-Control Panel{data-width=100}
+Control Panel{data-width=160}
 --------------------------------------------------------------------------------
+### Control Panel
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ4", label = "Type:",
@@ -291,6 +303,7 @@ inputPanel(
 
 Heatmap {data-width=800}
 --------------------------------------------------------------------------------
+### Heatmap
 ```{r, echo=FALSE}
 renderPlot({
 df%>%
@@ -309,8 +322,9 @@ df%>%
 Discounts
 ================================================================================
 
-Control Panel{data-width=100}
+Control Panel{data-width=160}
 --------------------------------------------------------------------------------
+### Control Panel
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("cat2", label = "Category:",
@@ -318,11 +332,12 @@ inputPanel(
 )
 ```
 
-Discounts {data-width=800}
+Analysis {data-width=800}
 --------------------------------------------------------------------------------
+### Analysis
 ```{r, echo=FALSE}
 renderPlot({
-df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=0))
+df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=1))
 df%>%
   filter(Category == input$cat2)%>%
   ggplot(aes(Sales, Profit, color=Discount))+

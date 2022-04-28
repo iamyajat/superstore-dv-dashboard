@@ -87,4 +87,8 @@ fig <- fig %>% layout(title = "Average Shipping Time by Mode of Transport",
                       yaxis = list(title = ""))
 
 fig
-df
+df$Order.Date
+
+library(tidyverse)
+library(lubridate)
+df<-df%>%mutate(month = month(Order.Date, label = T))

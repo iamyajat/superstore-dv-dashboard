@@ -93,6 +93,21 @@ fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
 fig
 ```
 
+### Products vs Preferred Ship Modes
+```{r,echo =FALSE}
+dfstore<-read.csv("./superstore.csv")
+dfstore%>%
+  group_by(Sub.Category)%>%
+  ggplot(aes(Sub.Category,fill=Ship.Mode))+
+  geom_bar(position = 'fill')+
+  scale_fill_manual(values = c("#DADAEB", "#9E9AC8", "#6A51A3","#301934"))+
+  coord_flip()+
+  labs(title='There is no prefered ship mode in different products',
+       x='Proportion',
+       y='Sub Category')+
+  theme_bw()
+```
+
 ### ANOTHER ANOTHER ONE
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {

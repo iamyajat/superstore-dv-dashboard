@@ -164,3 +164,31 @@ fig
 ```
 
 
+Heatmap
+================================================================================
+```{r, echo=FALSE}
+df%>%
+  group_by(Sub.Category, Segment)%>%
+  summarise(n=sum(Sales))%>%
+  ggplot(aes(Segment, Sub.Category, fill=n))+
+  scale_fill_distiller(palette = "YlGnBu", direction = 1)+
+  geom_tile(color='white')+
+  geom_text(aes(label=paste(round(n,0),'$')), color = 'white', size=3)+
+  theme_bw()+
+  labs(title='Sales: Segment vs. Sub-Category',
+       fill='Sales')
+
+```
+
+Discounts
+================================================================================
+```{r, echo=FALSE}
+df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=0))
+df%>%
+  filter(Category == 'Technology')%>%
+  ggplot(aes(Sales, Profit, color=Discount))+
+  geom_point()+
+  theme_bw()+
+  labs(title = 'Technology: Sales vs Profits', color='Discount')+
+  facet_wrap(~Sub.Category)
+```

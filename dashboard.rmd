@@ -1,6 +1,6 @@
 ---
 title: "Superstore Dashboard"
-output: 
+output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
@@ -16,7 +16,7 @@ df = read.csv("./superstore.csv")
 state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")[,1:2]
 ```
 
-USA : Business Analysis 
+USA : Business Analysis
 ================================================================================
 ```{r eruptions, echo=FALSE}
 inputPanel(
@@ -143,15 +143,6 @@ Visualization {data-width=800}
 --------------------------------------------------------------------------------
 
 ```{r, echo=FALSE}
-<<<<<<< HEAD
-=======
-inputPanel(
-  selectInput("typ3", label = "Type:",
-              choices = c("Sales", "Profit"), selected = "Sales"),
-  sliderInput("bw_adjust", label = "No. of cities:",
-              min = 2, max = 10, value = 5, step = 1)
-)
->>>>>>> 374c328dda88ecbcf0e7335ffebf7ee12619fdfe
 renderPlotly({
 
   df_city_agg = aggregate(df[, c(input$typ3)], list(df$City), sum)
@@ -212,8 +203,8 @@ g <- list(
   projection = list(type = 'albers usa')
 )
 
-fig <- plot_ly(type="choropleth", locations=dff2$code, 
-               locationmode="USA-states", 
+fig <- plot_ly(type="choropleth", locations=dff2$code,
+               locationmode="USA-states",
                text = dff2$hover,
                z=dff2$avgst) %>% layout(geo=g)
 fig <- fig %>% colorbar(title = "Days")
@@ -226,14 +217,31 @@ fig
 
 ```
 
-
-```{r, echo=FALSE}
-#average_shipping_time_by_mode_of_transport = tapply(data$shipping_time, data$Ship.Mode, mean)
-# LINK MAP HERE
-```
-
-Control Panel
+Average Shipping Time by Shipping Mode
 --------------------------------------------------------------------------------
+```{r, echo=FALSE}
+
+average_shipping_time_by_mode_of_transport = data.frame(tapply(df$shipping_time, df$Ship.Mode, mean))
+average_shipping_time_by_mode_of_transport$class = rownames(average_shipping_time_by_mode_of_transport)
+
+colnames(average_shipping_time_by_mode_of_transport) = c('timeavg', 'class')
+
+x <- average_shipping_time_by_mode_of_transport$class
+y <- average_shipping_time_by_mode_of_transport$timeavg
+text <- ""
+data <- data.frame(x, y, text)
+
+fig <- plot_ly(data = data, x= ~x, y= ~y,  type = 'bar', text = text,
+               marker = list(color = 'rgb(235, 190, 209)',
+                             line = list(color = 'rgb(232, 76, 134)',
+                                         width = 1.5)))
+fig <- fig %>% layout(title = "Average Shipping Time by Mode of Transport",
+                      xaxis = list(title = ""),
+                      yaxis = list(title = ""))
+
+fig
+
+```
 
 Heatmap
 ================================================================================

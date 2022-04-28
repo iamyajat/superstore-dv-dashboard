@@ -41,3 +41,5 @@ ship_mode_freq
 
 plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie")
 
+average_shipping_time_by_mode_of_transport = tapply(df$shipping_time, df$Ship.Mode, mean)
+average_shipping_time_by_mode_of_transport

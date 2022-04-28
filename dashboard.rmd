@@ -1,7 +1,5 @@
 ---
 title: "Superstore Dashboard"
-author: "Rishu, Yajat & Yash"
-date: '2022-04-22'
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -18,13 +16,8 @@ df = read.csv("./superstore.csv")
 state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")[,1:2]
 ```
 
-State Wise Lookup
+USA : Business Analysis 
 ================================================================================
-
-Column  {data-width="200"}
-------------------------------------------------------------------------------
-
-### First Plot
 ```{r eruptions, echo=FALSE}
 inputPanel(
   selectInput("cat", label = "Category:",
@@ -62,8 +55,8 @@ renderPlotly({
 
 
 
-Column  {data-width="200"}
-------------------------------------------------------------------------------
+Volume Divisions
+================================================================================
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ2", label = "Type:",
@@ -81,7 +74,7 @@ renderPlotly({
 ```
 
 
-Some Report
+Business Trinity
 ================================================================================
 ```{r, echo=FALSE}
 df<- read.csv("./superstore.csv")
@@ -118,11 +111,13 @@ dfstore%>%
   labs(title='There is no prefered ship mode in different products',
        x='Proportion',
        y='Sub Category')+
-  theme_bw()
+  theme_bw()+
+  theme(plot.margin = unit(c(3,1,1,1), "cm"))
 ```
 
 Trend of Sale and Profits
 ================================================================================
+<br />
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {
   suppressMessages(plotly_build(p))
@@ -135,21 +130,20 @@ fig <- suppressPlotlyMessage(plot_ly(data = df[seq(1,5000,50),], x = ~Sales, y =
                                          width = 1))))
 fig <- fig %>% layout(title = 'Sales vs Profit',
          yaxis = list(zeroline = FALSE),
-         xaxis = list(zeroline = FALSE))
+         xaxis = list(zeroline = FALSE),
+         margin = c(t=100))
 
 fig
 ```
 
 
-Analysis of Cities
+Top Cities
 ================================================================================
+
+Visualization {data-width=800}
+--------------------------------------------------------------------------------
+
 ```{r, echo=FALSE}
-inputPanel(
-  selectInput("typ3", label = "Type:",
-              choices = c("Sales", "Discount", "Profit"), selected = "Profit"),
-  sliderInput("bw_adjust", label = "No. of cities:",
-              min = 2, max = 10, value = 5, step = 1)
-)
 renderPlotly({
 
   df_city_agg = aggregate(df[, c(input$typ3)], list(df$City), sum)
@@ -166,12 +160,25 @@ fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
                                   width = 1.5)))
 fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$bw_adjust),
          xaxis = list(title = ""),
-         yaxis = list(title = ""))
+         yaxis = list(title = ""),
+         margin = c(t=100),
+         height = 700)
 
 fig  
 })
 ```
 
+
+Control Panel{data-width=100}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ3", label = "Type:",
+              choices = c("Sales", "Discount", "Profit"), selected = "Profit"),
+  sliderInput("bw_adjust", label = "No. of cities:",
+              min = 2, max = 10, value = 5, step = 1)
+)
+```
 
 Shipping Time Analysis
 ================================================================================

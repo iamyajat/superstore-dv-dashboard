@@ -144,8 +144,16 @@ fig
 Analysis of Cities
 ================================================================================
 ```{r, echo=FALSE}
-  df_city_agg = aggregate(df[, c("Profit")], list(df$City), sum)
-  df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=5)
+inputPanel(
+  selectInput("typ3", label = "Type:",
+              choices = c("Sales", "Discount", "Profit"), selected = "Profit"),
+  sliderInput("bw_adjust", label = "No. of cities:",
+              min = 2, max = 10, value = 5, step = 1)
+)
+renderPlotly({
+
+  df_city_agg = aggregate(df[, c(input$typ3)], list(df$City), sum)
+  df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=input$bw_adjust)
 
 x <- df_top5$Group.1
 y <- df_top5$x
@@ -156,11 +164,12 @@ fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(235, 190, 209)',
                       line = list(color = 'rgb(232, 76, 134)',
                                   width = 1.5)))
-fig <- fig %>% layout(title = "Top 5 Cities in Profit",
+fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$bw_adjust),
          xaxis = list(title = ""),
          yaxis = list(title = ""))
 
-fig
+fig  
+})
 ```
 
 

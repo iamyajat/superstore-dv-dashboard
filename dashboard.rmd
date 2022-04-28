@@ -146,7 +146,7 @@ Analysis of Cities
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ3", label = "Type:",
-              choices = c("Sales", "Discount", "Profit"), selected = "Profit"),
+              choices = c("Sales", "Profit"), selected = "Sales"),
   sliderInput("bw_adjust", label = "No. of cities:",
               min = 2, max = 10, value = 5, step = 1)
 )
@@ -164,7 +164,7 @@ fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(235, 190, 209)',
                       line = list(color = 'rgb(232, 76, 134)',
                                   width = 1.5)))
-fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$bw_adjust),
+fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$typ3),
          xaxis = list(title = ""),
          yaxis = list(title = ""))
 
@@ -173,20 +173,25 @@ fig
 ```
 
 
-Heatmap
+### Heatmap
 ================================================================================
 ```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ4", label = "Type:",
+              choices = c("Sales", "Profit"), selected = "Sales"),
+)
+renderPlot({
 df%>%
   group_by(Sub.Category, Segment)%>%
-  summarise(n=sum(Sales))%>%
+  summarise(n=sum(if (input$typ4 == "Sales") Sales else Profit))%>%
   ggplot(aes(Segment, Sub.Category, fill=n))+
-  scale_fill_distiller(palette = "YlGnBu", direction = 1)+
+  scale_fill_distiller(palette = "GnBu", direction = 1)+
   geom_tile(color='white')+
-  geom_text(aes(label=paste(round(n,0),'$')), color = 'white', size=3)+
+  geom_text(aes(label=paste(round(n,0),'$')), color = 'black', size=3)+
   theme_bw()+
-  labs(title='Sales: Segment vs. Sub-Category',
-       fill='Sales')
-
+  labs(title=paste(input$typ4,': Segment vs. Sub-Category'),
+       fill=input$typ4)
+})
 ```
 
 Discounts

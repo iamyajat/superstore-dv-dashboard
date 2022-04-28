@@ -164,3 +164,27 @@ fig
 ```
 
 
+Shipping Time Analysis
+================================================================================
+
+
+Average Shipping Time per city
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+#state_wise_sales_average = tapply(data$Sales, data$State, mean)
+#data$shipping_time <-  as.Date(as.character(data$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(data$Order.Date), format="%m/%d/%Y")
+#average_shipping_time_by_province = tapply(data$shipping_time, data$State, mean)
+
+# LINK MAP HERE
+
+```
+
+
+```{r, echo=FALSE}
+#average_shipping_time_by_mode_of_transport = tapply(data$shipping_time, data$Ship.Mode, mean)
+# LINK MAP HERE
+```
+
+Control Panel
+--------------------------------------------------------------------------------
+

@@ -24,7 +24,7 @@ inputPanel(
               choices = unique(df$Category), selected = "Office Supplies"),
   selectInput("typ", label = "Type:",
               choices = c("Sales", "Discount", "Profit"), selected = "Profit")
-  
+
 #  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
 #              min = 0.2, max = 2, value = 1, step = 0.2)
 )
@@ -33,8 +33,8 @@ renderPlotly({
   df_cat = df %>% filter(Category == input$cat)
   df_cat = aggregate(df_cat[, 18:21], list(df_cat$State), mean)
   df_cat = merge(x=df_cat, y=state_codes, by.x= "Group.1", by.y = "state")
-  df_cat$hover <- with(df_cat, paste(Group.1, "<br>Sales: ", round(Sales, digits = 2), 
-                                     "<br>Discount: ", round(Discount, digits = 2), 
+  df_cat$hover <- with(df_cat, paste(Group.1, "<br>Sales: ", round(Sales, digits = 2),
+                                     "<br>Discount: ", round(Discount, digits = 2),
                                      "<br>Profits: ", round(Profit, digits = 2)
                                      ))
   l <- list(color = toRGB("white"), width = 2)
@@ -42,7 +42,7 @@ renderPlotly({
     scope = 'usa',
     projection = list(type = 'albers usa')
   )
-  fig <- plot_ly(type="choropleth", locations=df_cat$code, 
+  fig <- plot_ly(type="choropleth", locations=df_cat$code,
                  locationmode="USA-states", text = df_cat$hover,
                  z=df_cat[, c(input$typ)]) %>% layout(geo=g)
   fig <- fig %>% colorbar(title ="in USD")
@@ -101,8 +101,7 @@ fig
 Shipment Trends
 ================================================================================
 ```{r,echo =FALSE}
-dfstore<-read.csv("./superstore.csv")
-dfstore%>%
+df%>%
   group_by(Sub.Category)%>%
   ggplot(aes(Sub.Category,fill=Ship.Mode))+
   geom_bar(position = 'fill')+
@@ -144,6 +143,15 @@ Visualization {data-width=800}
 --------------------------------------------------------------------------------
 
 ```{r, echo=FALSE}
+<<<<<<< HEAD
+=======
+inputPanel(
+  selectInput("typ3", label = "Type:",
+              choices = c("Sales", "Profit"), selected = "Sales"),
+  sliderInput("bw_adjust", label = "No. of cities:",
+              min = 2, max = 10, value = 5, step = 1)
+)
+>>>>>>> 374c328dda88ecbcf0e7335ffebf7ee12619fdfe
 renderPlotly({
 
   df_city_agg = aggregate(df[, c(input$typ3)], list(df$City), sum)
@@ -158,13 +166,13 @@ fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(235, 190, 209)',
                       line = list(color = 'rgb(232, 76, 134)',
                                   width = 1.5)))
-fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$bw_adjust),
+fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$typ3),
          xaxis = list(title = ""),
          yaxis = list(title = ""),
          margin = c(t=100),
          height = 700)
 
-fig  
+fig
 })
 ```
 
@@ -187,11 +195,34 @@ Shipping Time Analysis
 Average Shipping Time per city
 --------------------------------------------------------------------------------
 ```{r, echo=FALSE}
-#state_wise_sales_average = tapply(data$Sales, data$State, mean)
-#data$shipping_time <-  as.Date(as.character(data$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(data$Order.Date), format="%m/%d/%Y")
-#average_shipping_time_by_province = tapply(data$shipping_time, data$State, mean)
 
-# LINK MAP HERE
+state_wise_sales_average = tapply(df$Sales, df$State, mean)
+df$shipping_time <-  as.Date(as.character(df$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(df$Order.Date), format="%m/%d/%Y")
+average_shipping_time_by_province = data.frame(tapply(df$shipping_time, df$State, mean))
+average_shipping_time_by_province$state = rownames(average_shipping_time_by_province)
+dff2 = merge(x=average_shipping_time_by_province, y=state_codes, by.x= "state", by.y = "state")
+colnames(dff2) = c('state','avgst','code')
+dff2$hover <- with(dff2, paste(state, "<br>Days: ", round(avgst, digits = 1)))
+
+# give state boundaries a white border
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa')
+)
+
+fig <- plot_ly(type="choropleth", locations=dff2$code, 
+               locationmode="USA-states", 
+               text = dff2$hover,
+               z=dff2$avgst) %>% layout(geo=g)
+fig <- fig %>% colorbar(title = "Days")
+fig <- fig %>% layout(
+  title = 'Average Shipping Time'
+)
+
+fig
+
 
 ```
 
@@ -207,28 +238,39 @@ Control Panel
 Heatmap
 ================================================================================
 ```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ4", label = "Type:",
+              choices = c("Sales", "Profit"), selected = "Sales"),
+)
+renderPlot({
 df%>%
   group_by(Sub.Category, Segment)%>%
-  summarise(n=sum(Sales))%>%
+  summarise(n=sum(if (input$typ4 == "Sales") Sales else Profit))%>%
   ggplot(aes(Segment, Sub.Category, fill=n))+
-  scale_fill_distiller(palette = "YlGnBu", direction = 1)+
+  scale_fill_distiller(palette = "GnBu", direction = 1)+
   geom_tile(color='white')+
-  geom_text(aes(label=paste(round(n,0),'$')), color = 'white', size=3)+
+  geom_text(aes(label=paste(round(n,0),'$')), color = 'black', size=3)+
   theme_bw()+
-  labs(title='Sales: Segment vs. Sub-Category',
-       fill='Sales')
-
+  labs(title=paste(input$typ4,': Segment vs. Sub-Category'),
+       fill=input$typ4)
+})
 ```
 
 Discounts
 ================================================================================
 ```{r, echo=FALSE}
+inputPanel(
+  selectInput("cat2", label = "Category:",
+              choices = unique(df$Category), selected = "Office Supplies")
+)
+renderPlot({
 df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=0))
 df%>%
-  filter(Category == 'Technology')%>%
+  filter(Category == input$cat2)%>%
   ggplot(aes(Sales, Profit, color=Discount))+
   geom_point()+
   theme_bw()+
-  labs(title = 'Technology: Sales vs Profits', color='Discount')+
+  labs(title = paste(input$cat2, ': Sales vs Profits'), color='Discount')+
   facet_wrap(~Sub.Category)
+})
 ```

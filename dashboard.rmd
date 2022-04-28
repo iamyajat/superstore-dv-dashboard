@@ -63,7 +63,8 @@ renderPlotly({
 Business Trinity
 ================================================================================
 ```{r, echo=FALSE}
-df<- read.csv("./superstore.csv")
+renderPlotly({
+  
 fig <- plot_ly(df[seq(1,50000,500),], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
                marker = list(color = ~df$Quantity, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE))
 fig <- fig %>% add_markers()
@@ -77,10 +78,11 @@ fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
                         xref = 'paper',
                         yref = 'paper',
                         showarrow = FALSE
-                      ),paper_bgcolor = '#FFFFFF',
-                      plot_bgcolor = '#000000',
-                      font = list(color = "#000000"))
+                      ),paper_bgcolor = '#000000',
+                      plot_bgcolor = '#FFFFFF',
+                      font = list(color = "#FFFFFF"))
 fig
+})
 ```
 
 Trend of Sale and Profits

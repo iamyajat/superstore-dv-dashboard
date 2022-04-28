@@ -301,8 +301,7 @@ df%>%
   geom_tile(color='white')+
   geom_text(aes(label=paste(round(n,0),'$')), color = 'black', size=3)+
   theme_bw()+
-  labs(title=paste(input$typ4,': Segment vs. Sub-Category'),
-       fill=input$typ4)
+  labs(title=paste(input$typ4,': Segment vs. Sub-Category'),x='Segment', y='Sub Category', fill=input$typ4)
 })
 ```
 

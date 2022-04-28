@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(DT)
 library(plotly)
 library(dplyr)
+library(lubridate)
 df = read.csv("./superstore.csv")
 state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")[,1:2]
 ```
@@ -127,11 +128,15 @@ df%>%
 
 Trend of Sale and Profits
 ================================================================================
+
+Sales vs Profits
+--------------------------------------------------------------------------------
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {
   suppressMessages(plotly_build(p))
 }
-
+renderPlotly({
+  
 fig <- suppressPlotlyMessage(plot_ly(data = df[seq(1,5000,50),], x = ~Sales, y = ~Profit,
                marker = list(size = 6,
                              color = 'rgba(255, 182, 193, .9)',
@@ -143,8 +148,23 @@ fig <- fig %>% layout(title = 'Sales vs Profit',
          margin = c(t=100))
 
 fig
+})
 ```
 
+Monthly trend
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+renderPlot({
+  
+df<-df%>%mutate(month = month(as.Date(as.character(df$Order.Date), format="%m/%d/%Y"), label = T))
+df%>%
+  ggplot(aes(month,log(Profit)))+
+  geom_boxplot(fill='LightBlue')+
+  theme_bw()+
+  labs(title='Profit vs Month',
+       x='Month')
+})
+```
 
 Top Cities
 ================================================================================
@@ -295,7 +315,7 @@ Control Panel{data-width=100}
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("cat2", label = "Category:",
-              choices = unique(df$Category), selected = "Office Supplies")
+              choices = unique(df$Category), selected = "Furniture")
 )
 ```
 

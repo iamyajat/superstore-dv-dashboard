@@ -18,17 +18,21 @@ state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master
 
 USA : Business Analysis
 ================================================================================
-```{r eruptions, echo=FALSE}
+
+Control Panel{data-width=100}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
 inputPanel(
   selectInput("cat", label = "Category:",
               choices = unique(df$Category), selected = "Office Supplies"),
   selectInput("typ", label = "Type:",
               choices = c("Sales", "Discount", "Profit"), selected = "Profit")
-
-#  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
-#              min = 0.2, max = 2, value = 1, step = 0.2)
 )
+```
 
+Home{data-width=800}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
 renderPlotly({
   df_cat = df %>% filter(Category == input$cat)
   df_cat = aggregate(df_cat[, 18:21], list(df_cat$State), mean)
@@ -57,11 +61,10 @@ renderPlotly({
 
 Volume Divisions
 ================================================================================
+
+Volume Divisions{data-width=800}
+--------------------------------------------------------------------------------
 ```{r, echo=FALSE}
-inputPanel(
-  selectInput("typ2", label = "Type:",
-              choices = c("Ship.Mode", "Segment"), selected = "Ship.Mode")
-)
 renderPlotly({
   ship_mode_freq = data.frame(table(df[,c(input$typ2)]))
   fig <- plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie", textinfo='label+percent')
@@ -73,6 +76,14 @@ renderPlotly({
   })
 ```
 
+Control Panel{data-width=100}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("typ2", label = "Type:",
+              choices = c("Ship.Mode", "Segment"), selected = "Ship.Mode")
+)
+```
 
 Business Trinity
 ================================================================================
@@ -116,7 +127,6 @@ df%>%
 
 Trend of Sale and Profits
 ================================================================================
-<br />
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {
   suppressMessages(plotly_build(p))
@@ -186,7 +196,8 @@ Shipping Time Analysis
 Average Shipping Time per city
 --------------------------------------------------------------------------------
 ```{r, echo=FALSE}
-
+renderPlotly({
+  
 state_wise_sales_average = tapply(df$Sales, df$State, mean)
 df$shipping_time <-  as.Date(as.character(df$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(df$Order.Date), format="%m/%d/%Y")
 average_shipping_time_by_province = data.frame(tapply(df$shipping_time, df$State, mean))
@@ -213,6 +224,7 @@ fig <- fig %>% layout(
 )
 
 fig
+})
 
 
 ```
@@ -220,7 +232,8 @@ fig
 Average Shipping Time by Shipping Mode
 --------------------------------------------------------------------------------
 ```{r, echo=FALSE}
-
+renderPlotly({
+df$shipping_time <-  as.Date(as.character(df$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(df$Order.Date), format="%m/%d/%Y")
 average_shipping_time_by_mode_of_transport = data.frame(tapply(df$shipping_time, df$Ship.Mode, mean))
 average_shipping_time_by_mode_of_transport$class = rownames(average_shipping_time_by_mode_of_transport)
 
@@ -241,15 +254,24 @@ fig <- fig %>% layout(title = "Average Shipping Time by Mode of Transport",
 
 fig
 
+})
 ```
 
 Heatmap
 ================================================================================
+
+Control Panel{data-width=100}
+--------------------------------------------------------------------------------
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ4", label = "Type:",
               choices = c("Sales", "Profit"), selected = "Sales"),
 )
+```
+
+Heatmap {data-width=800}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
 renderPlot({
 df%>%
   group_by(Sub.Category, Segment)%>%
@@ -264,13 +286,22 @@ df%>%
 })
 ```
 
+
 Discounts
 ================================================================================
+
+Control Panel{data-width=100}
+--------------------------------------------------------------------------------
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("cat2", label = "Category:",
               choices = unique(df$Category), selected = "Office Supplies")
 )
+```
+
+Discounts {data-width=800}
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
 renderPlot({
 df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=0))
 df%>%
@@ -282,3 +313,4 @@ df%>%
   facet_wrap(~Sub.Category)
 })
 ```
+

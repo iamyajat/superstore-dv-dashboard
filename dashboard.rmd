@@ -2,11 +2,12 @@
 title: "Superstore Dashboard"
 author: "Rishu, Yajat & Yash"
 date: '2022-04-22'
-output: html_document
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 runtime: shiny
 ---
-
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -17,8 +18,13 @@ df = read.csv("./superstore.csv")
 state_codes = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")[,1:2]
 ```
 
-### Lookup
+State Wise Lookup
+================================================================================
 
+Column  {data-width="200"}
+------------------------------------------------------------------------------
+
+### First Plot
 ```{r eruptions, echo=FALSE}
 inputPanel(
   selectInput("cat", label = "Category:",
@@ -54,7 +60,10 @@ renderPlotly({
 })
 ```
 
-### Another one
+
+
+Column  {data-width="200"}
+------------------------------------------------------------------------------
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("typ2", label = "Type:",
@@ -71,7 +80,9 @@ renderPlotly({
   })
 ```
 
-### Another one
+
+Some Report
+================================================================================
 ```{r, echo=FALSE}
 df<- read.csv("./superstore.csv")
 fig <- plot_ly(df[seq(1,50000,500),], x = ~df$Sales, y = ~df$Profit, z = ~df$Discount,
@@ -93,7 +104,9 @@ fig <- fig %>% layout(scene = list(xaxis = list(title = 'Quantity'),
 fig
 ```
 
-### Products vs Preferred Ship Modes
+
+Shipment Trends
+================================================================================
 ```{r,echo =FALSE}
 dfstore<-read.csv("./superstore.csv")
 dfstore%>%
@@ -108,7 +121,8 @@ dfstore%>%
   theme_bw()
 ```
 
-### ANOTHER ANOTHER ONE
+Trend of Sale and Profits
+================================================================================
 ```{r, echo=FALSE}
 suppressPlotlyMessage <- function(p) {
   suppressMessages(plotly_build(p))
@@ -126,7 +140,9 @@ fig <- fig %>% layout(title = 'Sales vs Profit',
 fig
 ```
 
-### TOP 5 CITIES PROFIT
+
+Analysis of Cities
+================================================================================
 ```{r, echo=FALSE}
   df_city_agg = aggregate(df[, c("Profit")], list(df$City), sum)
   df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=5)

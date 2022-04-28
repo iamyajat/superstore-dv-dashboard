@@ -171,11 +171,11 @@ df%>%
   group_by(Sub.Category, Segment)%>%
   summarise(n=sum(Sales))%>%
   ggplot(aes(Segment, Sub.Category, fill=n))+
-  scale_fill_distiller(palette = "YlGnBu", direction = 1)+
+  scale_fill_distiller(palette = "YlOrBr", direction = 1)+
   geom_tile(color='white')+
-  geom_text(aes(label=paste(round(n,0),'$')), color = 'white', size=3)+
+  geom_text(aes(label=paste(round(n,0),'$')), color = 'black', size=3)+
   theme_bw()+
-  labs(title='Sales: Segment vs. Sub-Category',
+  labs(title='Sales: Segment vs Sub-Category',
        fill='Sales')
 
 ```

@@ -144,8 +144,16 @@ fig
 Analysis of Cities
 ================================================================================
 ```{r, echo=FALSE}
-  df_city_agg = aggregate(df[, c("Profit")], list(df$City), sum)
-  df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=5)
+inputPanel(
+  selectInput("typ3", label = "Type:",
+              choices = c("Sales", "Discount", "Profit"), selected = "Profit"),
+  sliderInput("bw_adjust", label = "No. of cities:",
+              min = 2, max = 10, value = 5, step = 1)
+)
+renderPlotly({
+
+  df_city_agg = aggregate(df[, c(input$typ3)], list(df$City), sum)
+  df_top5 = head(df_city_agg[order(df_city_agg$x, decreasing = TRUE),], n=input$bw_adjust)
 
 x <- df_top5$Group.1
 y <- df_top5$x
@@ -156,13 +164,38 @@ fig <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(235, 190, 209)',
                       line = list(color = 'rgb(232, 76, 134)',
                                   width = 1.5)))
-fig <- fig %>% layout(title = "Top 5 Cities in Profit",
+fig <- fig %>% layout(title = paste("Top",input$bw_adjust,"Cities in", input$bw_adjust),
          xaxis = list(title = ""),
          yaxis = list(title = ""))
 
-fig
+fig  
+})
 ```
 
+
+Shipping Time Analysis
+================================================================================
+
+
+Average Shipping Time per city
+--------------------------------------------------------------------------------
+```{r, echo=FALSE}
+#state_wise_sales_average = tapply(data$Sales, data$State, mean)
+#data$shipping_time <-  as.Date(as.character(data$Ship.Date), format="%m/%d/%Y") - as.Date(as.character(data$Order.Date), format="%m/%d/%Y")
+#average_shipping_time_by_province = tapply(data$shipping_time, data$State, mean)
+
+# LINK MAP HERE
+
+```
+
+
+```{r, echo=FALSE}
+#average_shipping_time_by_mode_of_transport = tapply(data$shipping_time, data$Ship.Mode, mean)
+# LINK MAP HERE
+```
+
+Control Panel
+--------------------------------------------------------------------------------
 
 Heatmap
 ================================================================================

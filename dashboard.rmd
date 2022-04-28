@@ -108,8 +108,7 @@ fig
 Shipment Trends
 ================================================================================
 ```{r,echo =FALSE}
-dfstore<-read.csv("./superstore.csv")
-dfstore%>%
+df%>%
   group_by(Sub.Category)%>%
   ggplot(aes(Sub.Category,fill=Ship.Mode))+
   geom_bar(position = 'fill')+
@@ -244,12 +243,18 @@ df%>%
 Discounts
 ================================================================================
 ```{r, echo=FALSE}
+inputPanel(
+  selectInput("cat2", label = "Category:",
+              choices = unique(df$Category), selected = "Office Supplies")
+)
+renderPlot({
 df<-df%>%mutate(Discount=cut_width(Discount,0.15,boundary=0))
 df%>%
-  filter(Category == 'Technology')%>%
+  filter(Category == input$cat2)%>%
   ggplot(aes(Sales, Profit, color=Discount))+
   geom_point()+
   theme_bw()+
-  labs(title = 'Technology: Sales vs Profits', color='Discount')+
+  labs(title = paste(input$cat2, ': Sales vs Profits'), color='Discount')+
   facet_wrap(~Sub.Category)
+})
 ```

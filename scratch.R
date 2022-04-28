@@ -40,3 +40,4 @@ ship_mode_freq = data.frame(table(df[,c("Ship.Mode")]))
 ship_mode_freq
 
 plot_ly(ship_mode_freq, labels = ~Var1, values = ~Freq, type= "pie")
+
